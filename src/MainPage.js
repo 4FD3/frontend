@@ -53,7 +53,7 @@ const Footer = styled.footer`
     text-align: center;    
   `;
 
-  
+
 function MainPage() {
 
   return (
@@ -78,7 +78,7 @@ function MainPage() {
         </Routes>
       </MainContent>
       <Footer>
-        Copyright
+        Copyright ©
       </Footer>
     </Container>
   );

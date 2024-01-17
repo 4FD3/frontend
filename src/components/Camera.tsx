@@ -27,7 +27,7 @@ export function Camera({ setPhotoOpen }) {
     margin: 'auto',
     position: 'absolute',
     top: '50%',
-    left: '50%', 
+    left: '50%',
     transform: 'translate(-50%, -50%)',
   };
 
@@ -151,13 +151,14 @@ export function Camera({ setPhotoOpen }) {
             ></video>
           )}
           {image && <img src={image} alt="Captured" style={{ width: '100%' }} />}
-          <br />
-          {streamStarted && !image && (
-            <IconButton style={{ color: '#FFA500' }} size="large" onClick={takePicture}><PhotoCameraIcon /></IconButton>
-          )}
-          {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); getVideoStream() }}><DeleteOutlineIcon /></IconButton>}
-          {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { stopVideoStream(); sendImageToOCR(image); setImage(''); handleClose(); }}><ForwardIcon /></IconButton>}
-          {!image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); handleClose(); stopVideoStream(); }}><HighlightOffIcon /></IconButton>}
+          <Box sx={{ textAlign: 'right' }}>
+            {streamStarted && !image && (
+              <IconButton style={{ color: '#FFA500' }} size="large" onClick={takePicture}><PhotoCameraIcon /></IconButton>
+            )}
+            {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); getVideoStream() }}><DeleteOutlineIcon /></IconButton>}
+            {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { stopVideoStream(); sendImageToOCR(image); setImage(''); handleClose(); }}><ForwardIcon /></IconButton>}
+            {!image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); handleClose(); stopVideoStream(); }}><HighlightOffIcon /></IconButton>}
+          </Box>
         </Box>
       </Modal>
     </div>
