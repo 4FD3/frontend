@@ -78,7 +78,7 @@ function MainPage() {
         </Routes>
       </MainContent>
       <Footer>
-        Copyright ©
+        Copyright © 4FD3 DIGITALIZING RECIEPTS
       </Footer>
     </Container>
   );
