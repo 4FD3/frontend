@@ -42,8 +42,10 @@ export default function Receit() {
                 setImageSrc(e.target.result);
             };
             reader.readAsDataURL(file);
+        }else{
+            console.log('file null or type not start with image');
         }
-
+        event.target.value = '';
     };
 
     const handleFileUpload = async () => {
@@ -98,8 +100,8 @@ export default function Receit() {
                         <Box sx={{ styleVideo }}>
                             <img src={imageSrc} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '300px' }} />
                             <Box sx={{ textAlign: 'right' }}>
-                                <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImageSrc(null); }}><DeleteOutlineIcon /></IconButton>
-                                <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { handleFileUpload(); setImageSrc(null); }}><ForwardIcon /></IconButton>
+                                <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImageSrc(null); setSelectedFile(null); }}><DeleteOutlineIcon /></IconButton>
+                                <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { handleFileUpload(); setImageSrc(null); setSelectedFile(null); }}><ForwardIcon /></IconButton>
                             </Box>
                         </Box>
                     </Modal>
@@ -116,7 +118,7 @@ export default function Receit() {
                     id="image-upload"
                 />
                 <label htmlFor="image-upload">
-                    <Button style={{ borderRadius: '25px', backgroundColor: '#F4A460', padding: 10, color: '#4682B4', width: '150px' }} onClick={() => document.getElementById('image-upload').click()}>Upload Receit</Button>
+                    <Button style={{ borderRadius: '25px', backgroundColor: '#F4A460', padding: 10, color: 'black', width: '150px' }} onClick={() => document.getElementById('image-upload').click()}>Upload Receit</Button>
                 </label>
             </Box>
         </div>

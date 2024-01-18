@@ -9,6 +9,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 
 
 export function Camera({ setPhotoOpen }) {
+
   const videoRef = useRef(null);
   const [image, setImage] = useState('');
   const [streamStarted, setStreamStarted] = useState(false);
@@ -31,16 +32,12 @@ export function Camera({ setPhotoOpen }) {
     transform: 'translate(-50%, -50%)',
   };
 
-
-
-
   useEffect(() => {
     getVideoStream();
     return () => {
       stopVideoStream();
     };
   }, [])
-
 
   const getVideoStream = async () => {
     try {
@@ -52,12 +49,13 @@ export function Camera({ setPhotoOpen }) {
       console.error('Error accessing the camera', error);
     }
   };
+
   const stopVideoStream = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
       const tracks = stream.getTracks();
       tracks.forEach(track => {
-        track.onended = () => console.log('Track onended event fired:', track);
+        console.log('before fired:', track.readyState);
         track.stop();
       });
 
@@ -73,7 +71,7 @@ export function Camera({ setPhotoOpen }) {
     }
   };
 
-  function dataURLtoBlob(dataurl) {
+  const dataURLtoBlob = (dataurl) => {
     const arr = dataurl.split(',');
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -96,8 +94,10 @@ export function Camera({ setPhotoOpen }) {
     const imageDataUrl = canvas.toDataURL('image/png');
     setImage(imageDataUrl);
   };
+
   const handleClose = () => {
     setPhotoOpen(false);
+    window.location.reload();
   };
 
   const sendImageToOCR = async (imageDataUrl) => {

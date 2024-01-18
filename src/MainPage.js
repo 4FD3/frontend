@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import { Routes, Route, Link } from 'react-router-dom';
 import Receit from './components/ReceitProvide.tsx';
 import DataDis from './components/DataDisplay.tsx';
+import { GoogleLogin } from 'react-google-login';
 
 
 const theme = {
@@ -53,8 +54,29 @@ const Footer = styled.footer`
     text-align: center;    
   `;
 
+const StyledGoogleLogin = styled(GoogleLogin)`
+  button {
+    background-color: ${theme.primary};
+    color: ${theme.primary};
+    border: none;
+    border-radius: 25px;
+    padding: 10px 15px;
+    /* Add other styling as needed */
+  }
+`;
 
 function MainPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const onSuccess = (response) => {
+    console.log('Login Success:', response);
+    setIsLoggedIn(true);
+    // Further process the response
+  };
+
+  const onFailure = (response) => {
+    console.log('Login Failed:', response);
+  };
 
   return (
     <Container>
@@ -63,13 +85,22 @@ function MainPage() {
           <Button style={{ color: 'white', width: '150px' }} component={Link} to='/'>Provide Receit</Button>
           <Button style={{ color: 'white', width: '150px' }} component={Link} to='/Data'>Check Report</Button>
         </Box>
-        <Avatar
+        {isLoggedIn && <Avatar
           sx={{ bgcolor: '#F4A460' }}
           alt="Remy Sharp"
           src="/broken-image.jpg"
         >
           B
-        </Avatar>
+        </Avatar>}
+        {!isLoggedIn && (
+          <StyledGoogleLogin
+            clientId="YOUR_CLIENT_ID"
+            buttonText="Login with Google"
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+            cookiePolicy={'single_host_origin'}
+          />
+        )}
       </Header>
       <MainContent>
         <Routes>
@@ -78,7 +109,7 @@ function MainPage() {
         </Routes>
       </MainContent>
       <Footer>
-        Copyright © 4FD3 DIGITALIZING RECIEPTS
+        <small>Copyright © 4FD3 DIGITALIZING RECIEPTS</small>
       </Footer>
     </Container>
   );
