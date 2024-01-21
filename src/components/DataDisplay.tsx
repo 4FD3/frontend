@@ -191,11 +191,8 @@ export default function DataDis() {
                         <AreaChartUseThis
                             data={data}
                             style={{
-                                // borderRadius: 2,
                                 width: { xs: '100%', md: '100%' },
                                 height: 300,
-                                // backgroundColor: '#F0F8FF',
-                                // padding: '1%',
                             }}
                         />
                         <Box sx={{
@@ -203,7 +200,13 @@ export default function DataDis() {
                             flexDirection: { xs: 'column', md: 'row' },
                         }}>
                             <VirtualizedList style={{ xs: '100%', md: '10%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%' }} />
-                            <StickyHeadTable style={{ xs: '100%', md: '50%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%' }} dataT={dummyData['receipts'][0]} />
+                            <StickyHeadTable style={{
+                                xs: '100%', md: '50%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%', '& .MuiTableCell-root': {
+                                    wordWrap: 'break-word',
+                                    maxWidth: '335px',
+                                    overflow: 'hidden',
+                                }
+                            }} dataT={dummyData['receipts'][0]} />
                         </Box>
                     </Paper>
                     <Paper sx={{
