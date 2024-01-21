@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 import React, { useState } from 'react';
-import { Button } from '@mui/material';
-import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import { Routes, Route, Link } from 'react-router-dom';
 import Receit from './components/ReceitProvide.tsx';
 import DataDis from './components/DataDisplay.tsx';
 import { GoogleLogin } from 'react-google-login';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
 
 const theme = {
@@ -75,6 +77,11 @@ const StyledGoogleLogin = styled(GoogleLogin)`
 
 function MainPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   const onSuccess = (response) => {
     console.log('Login Success:', response);
@@ -89,10 +96,14 @@ function MainPage() {
   return (
     <Container>
       <Header>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button style={{ color: 'white', width: '150px' }} component={Link} to='/'>Provide Receit</Button>
-          <Button style={{ color: 'white', width: '150px' }} component={Link} to='/Data'>Check Report</Button>
-        </Box>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="icon position tabs example"
+        >
+          <Tab icon={<DocumentScannerIcon />} iconPosition="start" label="Scan" component={Link} to='/' style={{ color: 'white' }} />
+          <Tab icon={<AssessmentIcon />} iconPosition="start" label="Report" component={Link} to='/Data' style={{ color: 'white' }} />
+        </Tabs>
         {isLoggedIn && <Avatar
           sx={{ bgcolor: '#F4A460' }}
           alt="Remy Sharp"
