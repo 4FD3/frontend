@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import { PieChart, Pie, Sector, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Radar, RadarChart, PolarGrid, Legend, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
@@ -52,6 +52,7 @@ const renderActiveShape = (props) => {
 
 export const PieChartUseThis = ({ dataIn }) => {
 
+    const COLORS = ['#4682B4', '#82ca9d', '#FFA500', '#B0C4DE', '#6c757d', '#28a745', '#f8f9fa', '#343a40', '#FFFFFF'];
     const [inde, setInd] = useState(0);
     const onPieEnter = (_, index) => {
         setInd(index);
@@ -71,7 +72,13 @@ export const PieChartUseThis = ({ dataIn }) => {
                     fill="#4682B4"
                     dataKey="value"
                     onMouseEnter={onPieEnter}
-                />
+                >
+                    {
+                        dataIn.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))
+                    }
+                </Pie>
             </PieChart>
         </ResponsiveContainer>
     );
@@ -93,7 +100,7 @@ export const RadarChartUseThis = ({ dataR, style }) => {
         </Box>);
 };
 
-export const AreaChartUseThis = ({ data,style }) => {
+export const AreaChartUseThis = ({ data, style }) => {
     return (
         <Box sx={style}>
             <ResponsiveContainer>
