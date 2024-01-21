@@ -3,7 +3,9 @@ import Box from '@mui/material/Box';
 import backgroundImg from '../images/sorry.png';
 import { PieChartUseThis, AreaChartUseThis, RadarChartUseThis } from './Charts.tsx';
 import StickyHeadTable from './DetailTable.tsx';
+import VirtualizedList from './ListData.tsx';
 import Paper from '@mui/material/Paper';
+
 const dataR = [
     {
         subject: 'Apparel',
@@ -196,7 +198,13 @@ export default function DataDis() {
                                 // padding: '1%',
                             }}
                         />
-                        <StickyHeadTable style={{ xs: '100%', md: '60%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%' }} />
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
+                        }}>
+                            <VirtualizedList style={{ xs: '100%', md: '10%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%' }} />
+                            <StickyHeadTable style={{ xs: '100%', md: '50%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%' }} dataT={dummyData['receipts'][0]} />
+                        </Box>
                     </Paper>
                     <Paper sx={{
                         borderRadius: 2,
