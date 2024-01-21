@@ -198,6 +198,8 @@ export default function DataDis() {
                         <Box sx={{
                             display: 'flex',
                             flexDirection: { xs: 'column', md: 'row' },
+                            margin: '1%',
+                            padding: '1%'
                         }}>
                             <VirtualizedList style={{ xs: '100%', md: '10%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%' }} />
                             <StickyHeadTable style={{
