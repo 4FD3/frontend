@@ -9,38 +9,44 @@ import Paper from '@mui/material/Paper';
 const dataR = [
     {
         subject: 'Apparel',
-        A: 120,
-        B: 110,
+        year_2021: 100,
+        year_2022: 120,
+        year_2023: 110,
         fullMark: 150,
     },
     {
         subject: 'Electronics',
-        A: 135,
-        B: 130,
+        year_2021: 100,
+        year_2022: 135,
+        year_2023: 130,
         fullMark: 150,
     },
     {
         subject: 'Home & Garden',
-        A: 86,
-        B: 130,
+        year_2021: 100,
+        year_2022: 86,
+        year_2023: 130,
         fullMark: 150,
     },
     {
         subject: 'Health & Beauty',
-        A: 99,
-        B: 100,
+        year_2021: 100,
+        year_2022: 99,
+        year_2023: 100,
         fullMark: 150,
     },
     {
         subject: 'Grocery',
-        A: 85,
-        B: 90,
+        year_2021: 100,
+        year_2022: 85,
+        year_2023: 90,
         fullMark: 150,
     },
     {
         subject: 'Others',
-        A: 65,
-        B: 85,
+        year_2021: 100,
+        year_2022: 65,
+        year_2023: 85,
         fullMark: 150,
     },
 ];
@@ -48,45 +54,45 @@ const dataR = [
 const data = [
     {
         name: 'Jan',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
+        year_2021: 3500,
+        year_2022: 4000,
+        year_2023: 2400,
     },
     {
         name: 'Feb',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
+        year_2021: 3000,
+        year_2022: 3000,
+        year_2023: 1398,
     },
     {
         name: 'March',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
+        year_2021: 5500,
+        year_2022: 2000,
+        year_2023: 9800,
     },
     {
         name: 'April',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
+        year_2021: 8900,
+        year_2022: 2780,
+        year_2023: 3908,
     },
     {
         name: 'May',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
+        year_2021: 3500,
+        year_2022: 1890,
+        year_2023: 4800,
     },
     {
         name: 'June',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
+        year_2021: 2500,
+        year_2022: 2390,
+        year_2023: 3800,
     },
     {
         name: 'July',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
+        year_2021: 1500,
+        year_2022: 3490,
+        year_2023: 4300,
     },
 ];
 
@@ -221,10 +227,10 @@ export default function DataDis() {
                         margin: '1%'
                     }}>
                         <Box>
-                            <RadarChartUseThis dataR={dataR} style={{ width: '100%', height: 300 }} />
+                            <RadarChartUseThis data={dataR} style={{ width: '100%', height: 300 }} />
                         </Box>
                         <Box>
-                            <PieChartUseThis dataIn={[
+                            <PieChartUseThis data={[
                                 { name: 'Grocery', value: 400 },
                                 { name: 'Electronic', value: 300 },
                                 { name: 'Home&Garden', value: 300 },

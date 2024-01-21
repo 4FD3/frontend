@@ -4,6 +4,9 @@ import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Radar, RadarChart, PolarGrid, Legend, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
+
+const COLORS = ['#82ca9d', '#4682B4', '#FFA500', '#B0C4DE', '#6c757d', '#28a745', '#f8f9fa', '#343a40', '#FFFFFF'];
+
 const renderActiveShape = (props) => {
     const RADIAN = Math.PI / 180;
     const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
@@ -50,9 +53,8 @@ const renderActiveShape = (props) => {
     );
 };
 
-export const PieChartUseThis = ({ dataIn }) => {
+export const PieChartUseThis = ({ data }) => {
 
-    const COLORS = ['#4682B4', '#82ca9d', '#FFA500', '#B0C4DE', '#6c757d', '#28a745', '#f8f9fa', '#343a40', '#FFFFFF'];
     const [inde, setInd] = useState(0);
     const onPieEnter = (_, index) => {
         setInd(index);
@@ -64,7 +66,7 @@ export const PieChartUseThis = ({ dataIn }) => {
                 <Pie
                     activeIndex={inde}
                     activeShape={renderActiveShape}
-                    data={dataIn}
+                    data={data}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -74,7 +76,7 @@ export const PieChartUseThis = ({ dataIn }) => {
                     onMouseEnter={onPieEnter}
                 >
                     {
-                        dataIn.map((entry, index) => (
+                        data.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))
                     }
@@ -84,16 +86,25 @@ export const PieChartUseThis = ({ dataIn }) => {
     );
 }
 
-export const RadarChartUseThis = ({ dataR, style }) => {
+export const RadarChartUseThis = ({ data, style }) => {
     return (
         <Box sx={style}>
             <ResponsiveContainer width="100%" height={300}>
-                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={dataR}>
+                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
                     <PolarGrid />
                     <PolarAngleAxis dataKey="subject" />
                     <PolarRadiusAxis angle={30} domain={[0, 150]} />
-                    <Radar name="2022" dataKey="A" stroke="#4682B4" fill="#4682B4" fillOpacity={0.3} />
-                    <Radar name="2023" dataKey="B" stroke="#FFA500" fill="#FFA500" fillOpacity={0.3} />
+                    {
+                        Object.keys(data[0]).map((val, index) => {
+                            if (typeof val === 'string' && val !== 'subject' && val !== 'fullMark') {
+                                return (
+                                    <Radar name={val} dataKey={val} stroke={COLORS[index % COLORS.length]} fill={COLORS[index % COLORS.length]} fillOpacity={0.3} />
+                                )
+                            } else {
+                                return null;
+                            }
+                        })
+                    }
                     <Legend />
                 </RadarChart>
             </ResponsiveContainer>
@@ -107,23 +118,36 @@ export const AreaChartUseThis = ({ data, style }) => {
                 <AreaChart data={data}
                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
-                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#4682B4" stopOpacity={0.8} />
-                            <stop offset="95%" stopColor="#4682B4" stopOpacity={0} />
-                        </linearGradient>
-                        <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#FFA500" stopOpacity={0.8} />
-                            <stop offset="95%" stopColor="#FFA500" stopOpacity={0} />
-                        </linearGradient>
+                        {
+                            Object.keys(data[0]).map((val, index) => {
+                                if (typeof val === 'string' && val !== 'name') {
+                                    return (
+                                        <linearGradient id={val} x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor={COLORS[index % COLORS.length]} stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor={COLORS[index % COLORS.length]} stopOpacity={0} />
+                                        </linearGradient>
+                                    )
+                                } else {
+                                    return null;
+                                }
+                            })
+                        }
                     </defs>
                     <XAxis dataKey="name" />
                     <YAxis />
                     <CartesianGrid strokeDasharray="3 3" />
                     <Tooltip />
-                    <Area type="monotone" dataKey="uv" stroke="#4682B4" fillOpacity={1} fill="url(#colorUv)" />
-                    <Area type="monotone" dataKey="pv" stroke="#FFA500" fillOpacity={1} fill="url(#colorPv)" />
+                    {
+                        Object.keys(data[0]).map((val, index) => {
+                            if (typeof val === 'string' && val !== 'name') {
+                                return <Area type="monotone" dataKey={val} stroke={COLORS[index % COLORS.length]} fillOpacity={1} fill={`url(#${val})`} />
+                            } else {
+                                return null;
+                            }
+                        })
+                    }
                 </AreaChart>
             </ResponsiveContainer>
-        </Box>
+        </Box >
     );
 }
