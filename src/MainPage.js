@@ -61,7 +61,15 @@ const StyledGoogleLogin = styled(GoogleLogin)`
     border: none;
     border-radius: 25px;
     padding: 10px 15px;
-    /* Add other styling as needed */
+    @media (max-width: 600px) {
+      background: url('path_to_google_logo.png') no-repeat center center;
+      background-size: contain;
+      border-radius: 50%; 
+      height: 40px; 
+      width: 40px; 
+      padding: 0; 
+      color: transparent; 
+    }
   }
 `;
 

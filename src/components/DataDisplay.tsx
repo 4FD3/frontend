@@ -1,22 +1,226 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import backgroundImg from '../images/sorry.png';
+import { PieChartUseThis, AreaChartUseThis, RadarChartUseThis } from './Charts.tsx';
+import StickyHeadTable from './DetailTable.tsx';
+import Paper from '@mui/material/Paper';
+const dataR = [
+    {
+        subject: 'Apparel',
+        A: 120,
+        B: 110,
+        fullMark: 150,
+    },
+    {
+        subject: 'Electronics',
+        A: 135,
+        B: 130,
+        fullMark: 150,
+    },
+    {
+        subject: 'Home & Garden',
+        A: 86,
+        B: 130,
+        fullMark: 150,
+    },
+    {
+        subject: 'Health & Beauty',
+        A: 99,
+        B: 100,
+        fullMark: 150,
+    },
+    {
+        subject: 'Grocery',
+        A: 85,
+        B: 90,
+        fullMark: 150,
+    },
+    {
+        subject: 'Others',
+        A: 65,
+        B: 85,
+        fullMark: 150,
+    },
+];
+
+const data = [
+    {
+        name: 'Jan',
+        uv: 4000,
+        pv: 2400,
+        amt: 2400,
+    },
+    {
+        name: 'Feb',
+        uv: 3000,
+        pv: 1398,
+        amt: 2210,
+    },
+    {
+        name: 'March',
+        uv: 2000,
+        pv: 9800,
+        amt: 2290,
+    },
+    {
+        name: 'April',
+        uv: 2780,
+        pv: 3908,
+        amt: 2000,
+    },
+    {
+        name: 'May',
+        uv: 1890,
+        pv: 4800,
+        amt: 2181,
+    },
+    {
+        name: 'June',
+        uv: 2390,
+        pv: 3800,
+        amt: 2500,
+    },
+    {
+        name: 'July',
+        uv: 3490,
+        pv: 4300,
+        amt: 2100,
+    },
+];
+
+const dummyData = {
+    "ocr_type": "receipts",
+    "request_id": "P_0-0-0-0-0-0-0-1_kr3awxez_810",
+    "ref_no": "AspDemo_1626256135747_535",
+    "file_name": "US-1.jpg",
+    "request_received_on": 1626256135995,
+    "success": true,
+    "image_width": 299,
+    "image_height": 400,
+    "image_rotation": 0.006,
+    "recognition_completed_on": 1626256139343,
+    "receipts": [{
+        "merchant_name": "Walmart",
+        "merchant_address": "1317 N MAIN ST STE A1, SUMMERVILLE SC 29483",
+        "merchant_phone": "+1 843-821-1991",
+        "merchant_website": null,
+        "merchant_tax_reg_no": null,
+        "merchant_company_reg_no": null,
+        "region": null,
+        "mall": null,
+        "country": "US",
+        "receipt_no": "09825",
+        "date": "2013-11-29",
+        "time": "04:04",
+        "items": [{
+            "amount": 149.99,
+            "description": "3DSXL BUNDLE 004549678097",
+            "flags": " T",
+            "qty": null,
+            "remarks": null,
+            "unitPrice": null
+        }, {
+            "amount": 149.99,
+            "description": "3DSXL BUNDLE 004549678097",
+            "flags": " T",
+            "qty": null,
+            "remarks": null,
+            "unitPrice": null
+        }],
+        "currency": "USD",
+        "total": 323.98,
+        "subtotal": 299.98,
+        "tax": 24.00,
+        "service_charge": null,
+        "tip": null,
+        "payment_method": "cash",
+        "payment_details": null,
+        "credit_card_type": null,
+        "credit_card_number": null,
+        "ocr_text": "    Walmart\n     Save money. Live better.\n            ( 843) 821 - 1991\n        MANAGER MICHAEL MOELLER\n         1317 N MAIN ST STE A1\n          SUMMERVILLE SC 29483\n ST: 1037 OP: 00001099 TE: 67 TR: 09825\n PRODUCT SERIAL # SW404491404\n 3DSXL BUNDLE 004549678097 149.99 T\n PRODUCT SERIAL #SV404491879\n 3DSXL BUNDLE 004549678097 149.99 T\n                    SUBTOTAL 299.98\n           TAX 1 8.000 X 24.00\n                       TOTAL 323.98\n                  CASH TEND 20.00\n                 DEBIT TEND 303.98\n                  CHANGE DUE 0.00\n  EFT DEBIT PAY FROM PRIMARY\n     303.98 TOTAL PURCHASE\n   ACCOUNT:**** **** **** 6151 S\n   REF 8 333300109919\n   NETWORK ID. 0082 APPR CODE 176481\n   TERMINAL # 19001068\n            11/29/13 04:04:16\n     # ITEMS SOLD 2\n      TC: 8487 7978 1832 0818 3098 6",
+        "ocr_confidence": 94.50,
+        "width": 215,
+        "height": 374,
+        "avg_char_width": null,
+        "avg_line_height": null,
+        "source_locations": {
+            "date": [[{ "x": 95, "y": 307 }, { "x": 211, "y": 307 }, { "x": 211, "y": 325 }, { "x": 95, "y": 325 }]],
+            "total": [[{ "x": 159, "y": 183 }, { "x": 247, "y": 182 }, { "x": 247, "y": 194 }, { "x": 159, "y": 194 }]],
+            "receipt_no": [[{ "x": 228, "y": 110 }, { "x": 256, "y": 110 }, { "x": 256, "y": 124 }, { "x": 228, "y": 124 }]],
+            "subtotal": [[{ "x": 139, "y": 163 }, { "x": 246, "y": 162 }, { "x": 246, "y": 174 }, { "x": 139, "y": 176 }]],
+            "merchant_name": [[{ "x": 58, "y": 3 }, { "x": 210, "y": 7 }, { "x": 209, "y": 54 }, { "x": 57, "y": 50 }]],
+            "doc": [[{ "x": 31, "y": -12 }, { "x": 268, "y": -11 }, { "x": 265, "y": 399 }, { "x": 29, "y": 398 }]],
+            "tax": [[{ "x": 90, "y": 173 }, { "x": 249, "y": 171 }, { "x": 249, "y": 182 }, { "x": 90, "y": 186 }]],
+            "merchant_phone": [[{ "x": 97, "y": 67 }, { "x": 210, "y": 67 }, { "x": 210, "y": 84 }, { "x": 97, "y": 84 }]],
+            "merchant_address": [[{ "x": 83, "y": 91 }, { "x": 210, "y": 90 }, { "x": 210, "y": 104 }, { "x": 83, "y": 104 }], [{ "x": 89, "y": 102 }, { "x": 212, "y": 101 }, { "x": 212, "y": 114 }, { "x": 89, "y": 116 }]]
+        }
+    }]
+};
 
 
 export default function DataDis() {
 
+    const [dataExist, setDataExist] = useState(true);
+    const COLORS = ['#4682B4', '#82ca9d', '#FFA500', '#B0C4DE', '#6c757d', '#28a745', '#f8f9fa', '#343a40', '#FFFFFF'];
+
     return (
         <div>
-            <img src={backgroundImg} alt="Grocery Img" style={{
-                width: '100%',
-                height: 'auto',
-                maxWidth: '600px',
-                maxHeight: '337.5px',
-                marginBottom: '20px'
-            }} />
-            <Box>
-                <h2>Sorry, no data available...</h2>
-            </Box>
+            {!dataExist &&
+                <div>
+                    <img src={backgroundImg} alt="Grocery Img" style={{
+                        width: '100%',
+                        height: 'auto',
+                        maxWidth: '600px',
+                        maxHeight: '337.5px',
+                        marginBottom: '20px'
+                    }} />
+                    <Box>
+                        <h2>Sorry, no data available...</h2>
+                    </Box>
+                </div>
+            }
+
+            {dataExist &&
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', md: 'row' },
+                }}>
+                    <Paper sx={{ width: { xs: '100%', md: '60%' }, margin: '1%', padding: '1%', backgroundColor: '#F0F8FF', borderRadius: 2, }}>
+                        <AreaChartUseThis
+                            data={data}
+                            style={{
+                                // borderRadius: 2,
+                                width: { xs: '100%', md: '100%' },
+                                height: 300,
+                                // backgroundColor: '#F0F8FF',
+                                // padding: '1%',
+                            }}
+                        />
+                        <StickyHeadTable style={{ xs: '100%', md: '60%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%' }} />
+                    </Paper>
+                    <Paper sx={{
+                        borderRadius: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: { xs: '100%', md: '40%' },
+                        backgroundColor: '#F0F8FF',
+                        padding: '1%',
+                        margin: '1%'
+                    }}>
+                        <Box>
+                            <RadarChartUseThis dataR={dataR} style={{ width: '100%', height: 300 }} />
+                        </Box>
+                        <Box>
+                            <PieChartUseThis dataIn={[
+                                { name: 'Grocery', value: 400 },
+                                { name: 'Electronic', value: 300 },
+                                { name: 'Home&Garden', value: 300 },
+                                { name: 'Other', value: 200 },
+                            ]} />
+                        </Box>
+                    </Paper>
+                </Box>
+            }
         </div>
     );
 }
