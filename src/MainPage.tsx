@@ -4,7 +4,7 @@ import Avatar from '@mui/material/Avatar';
 import { Routes, Route, Link } from 'react-router-dom';
 import Receit from './components/ReceitProvide.tsx';
 import DataDis from './components/DataDisplay.tsx';
-import { GoogleLogin } from 'react-google-login';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
@@ -56,25 +56,6 @@ const Footer = styled.footer`
     text-align: center;    
   `;
 
-const StyledGoogleLogin = styled(GoogleLogin)`
-  button {
-    background-color: ${theme.primary};
-    color: ${theme.primary};
-    border: none;
-    border-radius: 25px;
-    padding: 10px 15px;
-    @media (max-width: 600px) {
-      background: url('path_to_google_logo.png') no-repeat center center;
-      background-size: contain;
-      border-radius: 50%; 
-      height: 40px; 
-      width: 40px; 
-      padding: 0; 
-      color: transparent; 
-    }
-  }
-`;
-
 function MainPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [value, setValue] = React.useState(0);
@@ -83,10 +64,12 @@ function MainPage() {
     setValue(newValue);
   };
 
-  const onSuccess = (response) => {
+  async function onSuccess (response)  {
     console.log('Login Success:', response);
     setIsLoggedIn(true);
-    // Further process the response
+    const token = response?.credential;
+    sessionStorage.setItem('authToken', token);
+    // await sendTokenToBackend(token);
   };
 
   const onFailure = (response) => {
@@ -112,13 +95,15 @@ function MainPage() {
           B
         </Avatar>}
         {!isLoggedIn && (
-          <StyledGoogleLogin
-            clientId="YOUR_CLIENT_ID"
-            buttonText="Login with Google"
-            onSuccess={onSuccess}
-            onFailure={onFailure}
-            cookiePolicy={'single_host_origin'}
+          <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_PROVIDER_CLIENT_ID || 'foo_bar'}>
+
+            <GoogleLogin
+            onSuccess={credentialResponse => {onSuccess(credentialResponse)}}
+            onError={() => { onFailure('')}}
+            useOneTap
+            auto_select
           />
+        </GoogleOAuthProvider>
         )}
       </Header>
       <MainContent>
@@ -133,5 +118,23 @@ function MainPage() {
     </Container>
   );
 }
+
+async function sendTokenToBackend(token) {
+  const apiUrl = `${process.env.REACT_APP_API_URL}/auth/google`;
+  // Send this token to your server
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token }),
+  })
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+
+
+}
+
 
 export default MainPage;
