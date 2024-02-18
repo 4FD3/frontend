@@ -17,11 +17,11 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Name', minWidth: 170 },
+  { id: 'name', label: 'Name', minWidth: 100 },
   {
     id: 'value',
     label: 'Value',
-    minWidth: 170,
+    minWidth: 100,
     align: 'right',
     format: (value: number) => value.toFixed(2),
   },
