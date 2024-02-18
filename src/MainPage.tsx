@@ -160,19 +160,24 @@ function MainPage() {
           flexDirection: 'row',
         }}
         >
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              mr: 2,
-              display: isMobile ? 'flex' : open ? 'none' : 'flex',
-              ...(location.pathname === '/' && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                mr: 2,
+                display: isMobile ? 'flex' : open ? 'none' : 'flex',
+                ...(location.pathname === '/' && { display: 'none' }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
           <Tabs
             value={value}
             onChange={handleChange}
