@@ -25,6 +25,8 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import { useMediaQuery } from '@mui/material';
 import { Box } from '@mui/system';
+import AccountMenu from './components/AccountMenu.tsx';
+import TopRightDrawer from './components/Login.tsx';
 
 const themel = {
   primary: '#4682B4',
@@ -188,14 +190,16 @@ function MainPage() {
           </Tabs>
         </Box>
 
-        {isLoggedIn && <Avatar
+        {/* {isLoggedIn && <Avatar
           sx={{ bgcolor: '#F4A460' }}
           alt="Remy Sharp"
           src="/broken-image.jpg"
         >
           B
-        </Avatar>}
-        {!isLoggedIn && (
+        </Avatar>} */}
+        {isLoggedIn && <AccountMenu />}
+        {!isLoggedIn && <TopRightDrawer />}
+        {/* {!isLoggedIn && (
           <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_PROVIDER_CLIENT_ID || 'foo_bar'}>
 
             <GoogleLogin
@@ -205,7 +209,7 @@ function MainPage() {
               auto_select
             />
           </GoogleOAuthProvider>
-        )}
+        )} */}
       </Header>
       {/* <MainContent> */}
       <Drawer
