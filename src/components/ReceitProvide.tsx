@@ -56,6 +56,9 @@ export default function Receit() {
                 const response = await fetch('url', {
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`,
+                      },
                     // Include headers if required by your API
                 });
 
