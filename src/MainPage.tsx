@@ -9,7 +9,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-
+import MiniDrawer from './components/SideDrawer.tsx';
 
 const theme = {
   primary: '#4682B4',
@@ -126,6 +126,7 @@ function MainPage() {
           <Route path='/' element={<Receit />} />
           <Route path='/Data' element={<DataDis />} />
         </Routes>
+        {/* <MiniDrawer/> */}
       </MainContent>
       <Footer>
         <small>Copyright © 4FD3 DIGITALIZING RECIEPTS</small>

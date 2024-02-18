@@ -193,51 +193,80 @@ export default function DataDis() {
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
                 }}>
-                    <Paper sx={{ width: { xs: '100%', md: '60%' }, margin: '1%', padding: '1%', backgroundColor: '#F0F8FF', borderRadius: 2, }}>
-                        <AreaChartUseThis
-                            data={data}
-                            style={{
-                                width: { xs: '100%', md: '100%' },
-                                height: 300,
-                            }}
-                        />
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: { xs: '100%', md: '60%' },
+                    }}>
                         <Box sx={{
                             display: 'flex',
                             flexDirection: { xs: 'column', md: 'row' },
-                            margin: '1%',
-                            padding: '1%'
                         }}>
-                            <VirtualizedList style={{ xs: '100%', md: '10%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%' }} />
+                            <Paper sx={{ width: { xs: '100%', md: '100%' }, margin: '1%', padding: '1%', backgroundColor: '#F0F8FF', borderRadius: 2, }}>
+                                <AreaChartUseThis
+                                    data={data}
+                                    style={{
+                                        width: { xs: '100%', md: '100%' },
+                                        height: 300,
+                                    }}
+                                />
+                            </Paper>
+                        </Box>
+                        {/* <Paper sx={{ width: { xs: '100%', md: '100%' }, margin: '1%', padding: '1%', backgroundColor: '#F0F8FF', borderRadius: 2, }}> */}
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
+                        }}>
+                            <VirtualizedList style={{ xs: '100%', md: '10%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%' }} />
                             <StickyHeadTable style={{
-                                xs: '100%', md: '50%', overflow: 'hidden', backgroundColor: '#F0F8FF', margin: '1%', '& .MuiTableCell-root': {
+                                xs: '100%', md: '50%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%', '& .MuiTableCell-root': {
                                     wordWrap: 'break-word',
                                     maxWidth: '335px',
                                     overflow: 'hidden',
                                 }
                             }} dataT={dummyData['receipts'][0]} />
                         </Box>
-                    </Paper>
-                    <Paper sx={{
-                        borderRadius: 2,
+                        {/* </Paper> */}
+                    </Box>
+                    <Box sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         width: { xs: '100%', md: '40%' },
-                        backgroundColor: '#F0F8FF',
-                        padding: '1%',
-                        margin: '1%'
                     }}>
-                        <Box>
-                            <RadarChartUseThis data={dataR} style={{ width: '100%', height: 300 }} />
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
+                        }}>
+                            <Paper sx={{
+                                borderRadius: 2,
+                                width: { xs: '100%', md: '100%' },
+                                backgroundColor: '#F0F8FF',
+                                padding: '1.5%',
+                                margin: '1.5%'
+                            }}>
+                                <RadarChartUseThis data={dataR} style={{ width: '100%', height: 300 }} />
+                            </Paper>
                         </Box>
-                        <Box>
-                            <PieChartUseThis data={[
-                                { name: 'Grocery', value: 400 },
-                                { name: 'Electronic', value: 300 },
-                                { name: 'Home&Garden', value: 300 },
-                                { name: 'Other', value: 200 },
-                            ]} />
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
+                        }}>
+                            <Paper sx={{
+                                borderRadius: 2,
+                                width: { xs: '100%', md: '100%' },
+                                backgroundColor: '#F0F8FF',
+                                padding: '1.5%',
+                                margin: '1.5%'
+                            }}>
+                                <PieChartUseThis data={[
+                                    { name: 'Grocery', value: 400 },
+                                    { name: 'Electronic', value: 300 },
+                                    { name: 'Home&Garden', value: 300 },
+                                    { name: 'Other', value: 200 },
+                                ]} />
+                            </Paper>
                         </Box>
-                    </Paper>
+                    </Box>
                 </Box>
             }
         </div>

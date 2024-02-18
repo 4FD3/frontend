@@ -89,7 +89,7 @@ export const PieChartUseThis = ({ data }) => {
 export const RadarChartUseThis = ({ data, style }) => {
     return (
         <Box sx={style}>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
                     <PolarGrid />
                     <PolarAngleAxis dataKey="subject" />
