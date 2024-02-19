@@ -4,6 +4,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
+import LoginIcon from '@mui/icons-material/Login';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
 export default function FadeMenu() {
@@ -29,6 +30,7 @@ export default function FadeMenu() {
     };
     return (
         <div>
+            
             <Button
                 color= "inherit"
                 id="fade-button"
@@ -37,6 +39,7 @@ export default function FadeMenu() {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
             >
+                <LoginIcon />&nbsp;
                 Login
             </Button>
             <Menu
