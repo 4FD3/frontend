@@ -28,6 +28,10 @@ export default function FadeMenu() {
     const onFailure = (response) => {
         console.log('Login Failed:', response);
     };
+    function loginWithGoogle() {
+        window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/google`;
+      }
+
     return (
         <div>
             
@@ -61,19 +65,15 @@ export default function FadeMenu() {
                 }}                
             >
                 <Typography sx={{padding: 5}}>Use Your Google Account:</Typography>
-                <MenuItem onClick={handleClose}>
-                    <div style={{ width: '100%', overflow: 'hidden',textAlign: 'center', padding: '10px' }}>
-                    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_PROVIDER_CLIENT_ID || 'foo_bar'}>
-                        <GoogleLogin
-                            onSuccess={credentialResponse => { onSuccess(credentialResponse) }}
-                            onError={() => { onFailure('') }}
-                            useOneTap
-                            auto_select
-                        />
-                    </GoogleOAuthProvider>
-                    </div>
-                </MenuItem>
                 
+            {/* When this MenuItem is clicked, it will trigger the loginWithGoogle function */}
+            <MenuItem onClick={loginWithGoogle}>
+                <div style={{ width: '100%', overflow: 'hidden', textAlign: 'center', padding: '10px' }}>
+                    Login with Google
+                </div>
+            </MenuItem>
+            <button onClick={loginWithGoogle}>Login with Google</button>
+
             </Menu>
         </div>
     );
