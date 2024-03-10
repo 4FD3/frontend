@@ -28,6 +28,10 @@ export default function FadeMenu() {
     const onFailure = (response) => {
         console.log('Login Failed:', response);
     };
+    function loginWithGoogle() {
+        window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/google`;
+      }
+
     return (
         <div>
             

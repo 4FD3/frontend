@@ -53,7 +53,7 @@ export default function Receit() {
             const formData = new FormData();
             formData.append('file', selectedFile);
             try {
-                const response = await fetch('url', {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts/upload`, {
                     method: 'POST',
                     body: formData,
                     headers: {

@@ -108,7 +108,7 @@ export function Camera({ setPhotoOpen }) {
       formData.append('file', imageFile);
 
       try {
-        const response = await fetch('url', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts/upload`, {
           method: 'POST',
           body: formData,
           // Add headers if required by the OCR service
