@@ -41,13 +41,36 @@ function createData(
 
 const getData = (data) => {
   let result: any[] = [];
+  if (data){
   for (const [key, value] of Object.entries(data)) {
     if (typeof value === 'string') {
       result.push(createData(key, value));
     } else if (typeof value === 'number') {
       result.push(createData(key, value.toString()));
+    } else if (typeof value === 'object') {
+      if (Array.isArray(value)) {
+        value.map((v,i)=>{
+          if (typeof v === 'object') {
+            for (const [kk, vv] of Object.entries(v)) {
+              if (typeof vv === 'string') {
+                result.push(createData(key+" "+(i+1)+" "+kk, vv));
+              }else if (typeof vv === 'number') {
+                result.push(createData(key+" "+(i+1)+" "+kk, vv.toString()));
+              }
+            }
+          }
+        })
+      }else{
+      for (const [k, v] of Object.entries(value)) {
+        if (typeof v === 'string') {
+          result.push(createData(k, v));
+        }else if (typeof v === 'number') {
+          result.push(createData(k, v.toString()));
+        }
+      }}
     }
-  };
+  };}
+  console.log("--------------- ",result)
   return result;
 };
 

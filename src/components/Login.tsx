@@ -7,9 +7,9 @@ import Typography from '@mui/material/Typography';
 import LoginIcon from '@mui/icons-material/Login';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-export default function FadeMenu() {
+export default function TopRightDrawer({isLoggedIn, setIsLoggedIn}) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);

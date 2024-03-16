@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import backgroundImg from '../images/sorry.png';
 import { PieChartUseThis, AreaChartUseThis, RadarChartUseThis } from './Charts.tsx';
@@ -169,7 +169,37 @@ const dummyData = {
 export default function DataDis() {
 
     const [dataExist, setDataExist] = useState(true);
+    const [receiptContent, setReceiptContent] = useState(null);
+    const [receiptsData, setReceiptsData] = useState(null);
     const COLORS = ['#4682B4', '#82ca9d', '#FFA500', '#B0C4DE', '#6c757d', '#28a745', '#f8f9fa', '#343a40', '#FFFFFF'];
+    const getReceipts = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`,
+                      },
+                    // Include headers if required by your API
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setReceiptsData(data)
+                    console.log('get data:', data);
+                    // Handle the response data
+                } else {
+                    console.error('get data failed');
+                }
+            } catch (error) {
+                console.error('Error get data', error);
+            }
+        
+    };
+    useEffect(()=>{
+        getReceipts()
+    },[])
+
+
 
     return (
         <div>
@@ -217,14 +247,14 @@ export default function DataDis() {
                             display: 'flex',
                             flexDirection: { xs: 'column', md: 'row' },
                         }}>
-                            <VirtualizedList style={{ xs: '100%', md: '10%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%' }} />
+                            <VirtualizedList style={{ xs: '100%', md: '10%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%' }} data={receiptsData} setReceiptContent={setReceiptContent}/>
                             <StickyHeadTable style={{
                                 xs: '100%', md: '50%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%', '& .MuiTableCell-root': {
                                     wordWrap: 'break-word',
                                     maxWidth: '335px',
                                     overflow: 'hidden',
                                 }
-                            }} dataT={dummyData['receipts'][0]} />
+                            }} dataT={receiptContent} />
                         </Box>
                         {/* </Paper> */}
                     </Box>

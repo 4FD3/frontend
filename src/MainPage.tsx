@@ -1,10 +1,10 @@
 import * as StyledComponents from 'styled-components';
 import React, { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
+// import Avatar from '@mui/material/Avatar';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Receit from './components/ReceitProvide.tsx';
 import DataDis from './components/DataDisplay.tsx';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+// import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
@@ -95,32 +95,33 @@ function MainPage() {
     setValue(newValue);
   };
 
-  async function sendTokenToBackend(token) {
-    const apiUrl = `${process.env.REACT_APP_API_URL}/auth/google`;
-    // Send this token to your server
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token }),
-    })
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
-  }
+  // async function sendTokenToBackend(token) {
+  //   const apiUrl = `${process.env.REACT_APP_API_URL}/auth/google`;
+  //   // Send this token to your server
+  //   fetch(apiUrl, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ token }),
+  //   })
+  //     .then(res => res.json())
+  //     .then(data => console.log(data))
+  //     .catch(error => console.error('Error:', error));
+  // }
 
-  async function onSuccess(response) {
-    console.log('Login Success:', response);
-    setIsLoggedIn(true);
-    const token = response?.credential;
-    sessionStorage.setItem('authToken', token);
-    // await sendTokenToBackend(token);
-  };
+  // async function onSuccess(response) {
+  //   console.log('Login Success:', response);
+  //   setIsLoggedIn(true);
+  //   console.log("set is logged in ",isLoggedIn)
+  //   const token = response?.credential;
+  //   sessionStorage.setItem('authToken', token);
+  //   // await sendTokenToBackend(token);
+  // };
 
-  const onFailure = (response) => {
-    console.log('Login Failed:', response);
-  };
+  // const onFailure = (response) => {
+  //   console.log('Login Failed:', response);
+  // };
 
   const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -198,7 +199,7 @@ function MainPage() {
           B
         </Avatar>} */}
         {isLoggedIn && <AccountMenu />}
-        {!isLoggedIn && <TopRightDrawer />}
+        {!isLoggedIn && <TopRightDrawer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}
         {/* {!isLoggedIn && (
           <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_PROVIDER_CLIENT_ID || 'foo_bar'}>
 
