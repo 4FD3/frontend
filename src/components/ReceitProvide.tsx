@@ -74,16 +74,37 @@ export default function Receit() {
             }
         }
     };
-
+    const getWidth = () => window.innerWidth 
+    || document.documentElement.clientWidth 
+    || document.body.clientWidth;
+  
+  // Function to dynamically generate the image style based on screen width
+  const getImageStyle = () => {
+    let imageStyle = {
+      width: '100%',
+      height: 'auto',
+      maxWidth: '600px',
+      maxHeight: '337.5px',
+      marginBottom: '20px',
+      marginTop: '10px',
+    };
+  
+    if (getWidth() < 600) {
+      imageStyle = {
+        ...imageStyle,
+        marginTop: '30%',
+      };
+    }
+  
+    return imageStyle;
+  };
+  
+  
+  const imageStyle = getImageStyle();
+  
     return (
         <div>
-            <img src={backgroundImg} alt="Grocery Img" style={{
-                width: '100%',
-                height: 'auto',
-                maxWidth: '600px',
-                maxHeight: '337.5px',
-                marginBottom: '20px'
-            }} />
+            <img src={backgroundImg} alt="Grocery Img" style={ imageStyle } />
             <br /><br />
             {photoOpen && <Camera setPhotoOpen={setPhotoOpen} />}
 

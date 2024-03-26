@@ -21,7 +21,7 @@ const columns: readonly Column[] = [
   {
     id: 'value',
     label: 'Value',
-    minWidth: 100,
+    minWidth: 150,
     align: 'right',
     format: (value: number) => value.toFixed(2),
   },
@@ -77,8 +77,12 @@ const getData = (data) => {
 export default function StickyHeadTable({ style, dataT }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = React.useState<Data[]>([]);
 
-  const rows = getData(dataT);
+  React.useEffect(() => {
+    setRows(getData(dataT));
+  }, [dataT]);
+  // const rows = getData(dataT);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -109,9 +113,9 @@ export default function StickyHeadTable({ style, dataT }) {
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
+              .map((row,ind) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.value}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.value+ind}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (

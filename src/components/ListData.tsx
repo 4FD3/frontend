@@ -5,20 +5,20 @@ import ListItemText from '@mui/material/ListItemText';
 import { FixedSizeList } from 'react-window';
 import Paper from '@mui/material/Paper';
 
-function renderRow({data,setReceiptContent}) {
+function renderRow({data,setReceiptContentIndex}) {
 
     return function({ index, style }){
     
     return (
         <ListItem style={style} key={index} component="div" disablePadding>
-            <ListItemButton onClick={()=>setReceiptContent(data[index])}>
+            <ListItemButton onClick={()=>setReceiptContentIndex(index)}>
                 <ListItemText primary={`Receit ${data[index].dateOfReceipt}`} />
             </ListItemButton>
         </ListItem>
     );}
 }
 
-export default function VirtualizedList({style,data,setReceiptContent}) {
+export default function VirtualizedList({style,data,setReceiptContentIndex}) {
     return (
         <Paper
             sx={style}
@@ -30,7 +30,7 @@ export default function VirtualizedList({style,data,setReceiptContent}) {
                 itemCount={data?data.length:0}
                 overscanCount={5}
             >
-                {renderRow({data, setReceiptContent})}
+                {renderRow({data, setReceiptContentIndex})}
             </FixedSizeList>
         </Paper>
     );

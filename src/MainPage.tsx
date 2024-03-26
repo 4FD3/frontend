@@ -181,6 +181,7 @@ function MainPage() {
               <MenuIcon />
             </IconButton>
           </Box>
+          {isLoggedIn && 
           <Tabs
             value={value}
             onChange={handleChange}
@@ -188,7 +189,7 @@ function MainPage() {
           >
             <Tab icon={<DocumentScannerIcon />} iconPosition="start" label="Scan" component={Link} to='/' style={{ color: 'white' }} />
             <Tab icon={<AssessmentIcon />} iconPosition="start" label="Report" component={Link} to='/Data' style={{ color: 'white' }} />
-          </Tabs>
+          </Tabs>}
         </Box>
 
         {/* {isLoggedIn && <Avatar
