@@ -22,15 +22,26 @@ export default function TopRightDrawer({isLoggedIn, setIsLoggedIn}) {
         setIsLoggedIn(true);
         const token = response?.credential;
         sessionStorage.setItem('authToken', token);
-        // await sendTokenToBackend(token);
+        await sendTokenToBackend(token);
     };
 
     const onFailure = (response) => {
         console.log('Login Failed:', response);
     };
-    function loginWithGoogle() {
-        window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/google`;
-      }
+
+    async function sendTokenToBackend(token) {
+        const apiUrl = `${process.env.REACT_APP_API_URL}/api/auth/google`;
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token }),
+        })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+    }
 
     return (
         <div>
