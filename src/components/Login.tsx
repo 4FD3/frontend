@@ -1,26 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import LoginIcon from '@mui/icons-material/Login';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-
+import { jwtDecode } from "jwt-decode";
+import { GoogleLogin, GoogleOAuthProvider , } from '@react-oauth/google';
 export default function TopRightDrawer({isLoggedIn, setIsLoggedIn}) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
     const open = Boolean(anchorEl);
+
+    useEffect(() => {
+        const token = sessionStorage.getItem('authToken');
+        const expiresAt = sessionStorage.getItem('expiresAt');
+        const now = new Date();
+    
+        if (token && expiresAt && now.getTime() < parseInt(expiresAt)) {
+            setIsLoggedIn(true);
+        } else {
+            // Token is expired or not present
+            sessionStorage.removeItem('authToken');
+            sessionStorage.removeItem('expiresAt');
+            setIsLoggedIn(false);
+        }
+    }, [setIsLoggedIn]);
+    
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     async function onSuccess(response) {
         console.log('Login Success:', response);
         setIsLoggedIn(true);
         const token = response?.credential;
+        const decodedToken = jwtDecode(token) as { exp: number };
+
+        const expiresAt = decodedToken.exp * 1000;
+        sessionStorage.setItem('authToken', token);
+        sessionStorage.setItem('expiresAt', expiresAt.toString());
+    
+
         sessionStorage.setItem('authToken', token);
         await sendTokenToBackend(token);
     };
@@ -36,6 +61,7 @@ export default function TopRightDrawer({isLoggedIn, setIsLoggedIn}) {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({ token }),
         })
             .then(res => res.json())

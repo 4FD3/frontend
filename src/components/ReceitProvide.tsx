@@ -56,10 +56,10 @@ export default function Receit() {
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts/upload`, {
                     method: 'POST',
                     body: formData,
+                    credentials: 'include',
                     headers: {
                         'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`,
                       },
-                    // Include headers if required by your API
                 });
 
                 if (response.ok) {
@@ -78,7 +78,6 @@ export default function Receit() {
     || document.documentElement.clientWidth 
     || document.body.clientWidth;
   
-  // Function to dynamically generate the image style based on screen width
   const getImageStyle = () => {
     let imageStyle = {
       width: '100%',

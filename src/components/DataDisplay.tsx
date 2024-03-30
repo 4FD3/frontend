@@ -176,10 +176,7 @@ export default function DataDis() {
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts`, {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`,
-                      },
-                    // Include headers if required by your API
+                    credentials: 'include',
                 });
 
                 if (response.ok) {

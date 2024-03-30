@@ -95,34 +95,6 @@ function MainPage() {
     setValue(newValue);
   };
 
-  // async function sendTokenToBackend(token) {
-  //   const apiUrl = `${process.env.REACT_APP_API_URL}/auth/google`;
-  //   // Send this token to your server
-  //   fetch(apiUrl, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ token }),
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => console.log(data))
-  //     .catch(error => console.error('Error:', error));
-  // }
-
-  // async function onSuccess(response) {
-  //   console.log('Login Success:', response);
-  //   setIsLoggedIn(true);
-  //   console.log("set is logged in ",isLoggedIn)
-  //   const token = response?.credential;
-  //   sessionStorage.setItem('authToken', token);
-  //   // await sendTokenToBackend(token);
-  // };
-
-  // const onFailure = (response) => {
-  //   console.log('Login Failed:', response);
-  // };
-
   const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
