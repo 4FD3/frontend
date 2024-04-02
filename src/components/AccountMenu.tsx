@@ -33,7 +33,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 , bgcolor: '#F4A460' }}>M</Avatar>
+            <Avatar sx={{ width: 32, height: 32 , bgcolor: '#F4A460' }} src='../images/pic1.png' />
           </IconButton>
         </Tooltip>
       </Box>

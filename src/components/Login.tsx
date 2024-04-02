@@ -36,7 +36,7 @@ export default function TopRightDrawer({isLoggedIn, setIsLoggedIn}) {
     };
 
     async function onSuccess(response) {
-        console.log('Login Success:', response);
+        console.log('Login Success:', response.clientId);
         setIsLoggedIn(true);
         const token = response?.credential;
         const decodedToken = jwtDecode(token) as { exp: number };
