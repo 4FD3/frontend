@@ -18,7 +18,7 @@ export default function TopRightDrawer({isLoggedIn, setIsLoggedIn}) {
         setAnchorEl(null);
     };
     async function onSuccess(response) {
-        console.log('Login Success:', response);
+        console.log('Login Success:', response.clientId);
         setIsLoggedIn(true);
         const token = response?.credential;
         sessionStorage.setItem('authToken', token);

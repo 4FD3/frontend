@@ -246,6 +246,10 @@ export default function DataDis() {
                         <Box sx={{
                             display: 'flex',
                             flexDirection: { xs: 'column', md: 'row' },
+                            padding: '1%',
+                            margin: '1%',
+                            borderRadius: 2,
+                            backgroundColor: '#F0F8FF'
                         }}>
                             <VirtualizedList style={{ xs: '100%', md: '100%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%' }} data={receiptsData} setReceiptContentIndex={setReceiptContentIndex}/>
                             <StickyHeadTable style={{
