@@ -191,6 +191,13 @@ export default function DataDis({ area_chart_data, radar_chart_data }) {
             if (response.ok) {
                 const data = await response.json();
                 setReceiptsData(data)
+                if (data.length > 0){
+                    console.log('has data ',datadata.length)
+                    setDataExist(true);
+                }else{
+                    setDataExist(false);
+                    console.log('no data ')
+                }
                 console.log('get data:', data);
                 // Handle the response data
             } else {
