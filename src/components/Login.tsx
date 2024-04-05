@@ -6,11 +6,18 @@ import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import LoginIcon from '@mui/icons-material/Login';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 
-export default function TopRightDrawer({isLoggedIn, setIsLoggedIn}) {
+
+export default function TopRightDrawer({ isLoggedIn, setIsLoggedIn, setUser_info }) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    // const [user_info, setUser_info] = React.useState(null);
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
     const open = Boolean(anchorEl);
+
+    const { enqueueSnackbar } = useSnackbar();
+
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -18,67 +25,89 @@ export default function TopRightDrawer({isLoggedIn, setIsLoggedIn}) {
         setAnchorEl(null);
     };
     async function onSuccess(response) {
-        console.log('Login Success:', response.clientId);
+        console.log('Login Success:', response);
         setIsLoggedIn(true);
         const token = response?.credential;
-        sessionStorage.setItem('authToken', token);
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('isLoggedIn', 'true');
         // await sendTokenToBackend(token);
+        try {
+            const result = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/google`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+                body: JSON.stringify({ token: token }),
+            });
+
+            if (!result.ok) {
+                throw new Error('Failed to authenticate with the backend');
+            }
+
+            const userInfo = await result.json();
+            setUser_info(userInfo);
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+        } catch (error) {
+            console.error('Error sending token to backend:', error);
+            enqueueSnackbar(error);
+        }
     };
 
     const onFailure = (response) => {
         console.log('Login Failed:', response);
+        enqueueSnackbar('Login Failed.');
     };
-    function loginWithGoogle() {
-        window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/google`;
-      }
+
 
     return (
         <div>
-            
-            <Button
-                color= "inherit"
-                id="fade-button"
-                aria-controls={open ? 'fade-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-            >
-                <LoginIcon />&nbsp;
-                Login
-            </Button>
-            <Menu
-                id="fade-menu"
-                MenuListProps={{
-                    'aria-labelledby': 'fade-button',
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                TransitionComponent={Fade}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}                
-            >
-                <Typography sx={{padding: 5}}>Use Your Google Account:</Typography>
-                <MenuItem onClick={handleClose}>
-                    <div style={{ width: '100%', overflow: 'hidden',textAlign: 'center', padding: '10px' }}>
-                    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_PROVIDER_CLIENT_ID || 'foo_bar'}>
-                        <GoogleLogin
-                            onSuccess={credentialResponse => { onSuccess(credentialResponse) }}
-                            onError={() => { onFailure('') }}
-                            useOneTap
-                            auto_select
-                        />
-                    </GoogleOAuthProvider>
-                    </div>
-                </MenuItem>
-                
-            </Menu>
+            <SnackbarProvider maxSnack={3}>
+                <Button
+                    color="inherit"
+                    id="fade-button"
+                    aria-controls={open ? 'fade-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
+                    onClick={handleClick}
+                >
+                    <LoginIcon />&nbsp;
+                    Login
+                </Button>
+                <Menu
+                    id="fade-menu"
+                    MenuListProps={{
+                        'aria-labelledby': 'fade-button',
+                    }}
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    TransitionComponent={Fade}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                >
+                    <Typography sx={{ padding: 5 }}>Use Your Google Account:</Typography>
+                    <MenuItem onClick={handleClose}>
+                        <div style={{ width: '100%', overflow: 'hidden', textAlign: 'center', padding: '10px' }}>
+                            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_PROVIDER_CLIENT_ID || 'foo_bar'}>
+                                <GoogleLogin
+                                    onSuccess={credentialResponse => { onSuccess(credentialResponse) }}
+                                    onError={() => { onFailure('') }}
+                                    useOneTap
+                                    auto_select
+                                />
+                            </GoogleOAuthProvider>
+                        </div>
+                    </MenuItem>
+                </Menu>
+            </SnackbarProvider>
         </div>
     );
 }

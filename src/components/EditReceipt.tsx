@@ -14,12 +14,12 @@ export function EditModal({ data, onSave }) {
     const [editableData, setEditableData] = useState(data);
     const [open, setOpen] = useState(true);
 
-    const categories = [{value:"grocery",label:"Grocery"},
-                        {value:"electronics", label:"Electronics"},
-                        {value:"home",label:"Home&Gardon"},
-                        {value:"apparel",label: "Apparel"},
-                        {value:"health",label:"Health&Beauty"},
-                        {value:"others",label:"Others"}];
+    const categories = [{ value: "grocery", label: "Grocery" },
+    { value: "electronics", label: "Electronics" },
+    { value: "home", label: "Home&Gardon" },
+    { value: "apparel", label: "Apparel" },
+    { value: "health", label: "Health&Beauty" },
+    { value: "others", label: "Others" }];
 
     const handleChange = (e, index, type) => {
         // Clone the current data to avoid direct state mutation
@@ -28,7 +28,7 @@ export function EditModal({ data, onSave }) {
         if (type === 'items' || type === 'tax' || type === 'total') {
             // Update the specified item's name or price
             newData[type][index][e.target.name] = e.target.value;
-            console.log("````````````",e.target.name,e.target.value)
+            console.log("````````````", e.target.name, e.target.value)
         } else if (type === 'storeName') {
             newData[type] = e.target.value;
         }
@@ -43,11 +43,20 @@ export function EditModal({ data, onSave }) {
         setEditableData({ ...editableData, items: newItems });
     }
 
-    function deleteItem(index) {
-        // Filter out the item at the specified index
-        const newItems = editableData.items.filter((_, i) => i !== index);
-        setEditableData({ ...editableData, items: newItems });
+    function deleteItem(typ, index) {
+        let newEditableData = { ...editableData };
+
+        if (typ === 'items') {
+            newEditableData.items = editableData.items.filter((_, i) => i !== index);
+        } else if (typ === 'tax') {
+            newEditableData.tax = editableData.tax.filter((_, i) => i !== index);
+        } else if (typ === 'total') {
+            newEditableData.total = editableData.total.filter((_, i) => i !== index);
+        }
+
+        setEditableData(newEditableData);
     }
+
 
 
     const handleClose = () => { setOpen(false); window.location.reload(); }
@@ -57,9 +66,9 @@ export function EditModal({ data, onSave }) {
                 open={open}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
-                sx={{backgroundImage: `linear-gradient(to top left, #f8f9fa, #B0C4DE)`}}
+                sx={{ backgroundImage: `linear-gradient(to top left, #f8f9fa, #B0C4DE)` }}
             >
-                <Box sx={{ border: '1px solid black', padding: '20px', margin: '20px', backgroundImage: `linear-gradient(to bottom right, #f8f9fa, #B0C4DE)`}}>
+                <Box sx={{ border: '1px solid black', padding: '20px', margin: '20px', backgroundImage: `linear-gradient(to bottom right, #f8f9fa, #B0C4DE)` }}>
                     <h2>Edit Data</h2>
                     {/* Example for items, similarly implement for tax and total */}
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}><h3>Items</h3>
@@ -71,7 +80,7 @@ export function EditModal({ data, onSave }) {
                         item ?
                             <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Box>
-                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem(index) }}><CloseIcon /></IconButton>
+                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("items", index) }}><CloseIcon /></IconButton>
                                 </Box>
                                 <Box>
                                     <Input
@@ -84,7 +93,7 @@ export function EditModal({ data, onSave }) {
                                         value={item.price}
                                         type="number"
                                         onChange={(e) => handleChange(e, index, 'items')}
-                                        sx={{width:'30%'}}
+                                        sx={{ width: '30%' }}
                                     />
                                     <Input
                                         name="quantity"
@@ -92,32 +101,32 @@ export function EditModal({ data, onSave }) {
                                         type="number"
                                         inputProps={{ min: 0 }}
                                         onChange={(e) => handleChange(e, index, 'items')}
-                                        sx={{width:'9%'}}
+                                        sx={{ width: '9%' }}
                                     />
                                     <TextField
                                         id="standard-select-currency"
                                         name="category"
-                                        select                                        
+                                        select
                                         // defaultValue="grocery"
                                         value={item.category}
                                         variant="standard"
                                         onChange={(e) => handleChange(e, index, 'items')}
                                         sx={{ width: 90 }}
-                                        >
+                                    >
                                         {categories.map((option) => (
                                             <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
+                                                {option.label}
                                             </MenuItem>
                                         ))}
                                     </TextField>
-                                    
+
                                 </Box>
                             </Box> : null
                     ))}
                     <h3>Others</h3>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Box>
-                            <IconButton size="small" style={{ color: '#FFA500' }} ><StorefrontIcon/></IconButton>
+                            <IconButton size="small" style={{ color: '#FFA500' }} ><StorefrontIcon /></IconButton>
                         </Box>
                         <Box>
                             <Input
@@ -136,7 +145,7 @@ export function EditModal({ data, onSave }) {
                         item ?
                             <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Box>
-                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem(index) }}><CloseIcon /></IconButton>
+                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("tax", index) }}><CloseIcon /></IconButton>
                                 </Box>
                                 <Box>
 
@@ -158,7 +167,7 @@ export function EditModal({ data, onSave }) {
                         item ?
                             <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Box>
-                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem(index) }}><CloseIcon /></IconButton>
+                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("total", index) }}><CloseIcon /></IconButton>
                                 </Box>
                                 <Box>
                                     <Input

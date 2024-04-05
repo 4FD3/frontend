@@ -1,5 +1,5 @@
 import * as StyledComponents from 'styled-components';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import Avatar from '@mui/material/Avatar';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Receit from './components/ReceitProvide.tsx';
@@ -11,22 +11,21 @@ import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import { styled, useTheme } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import { useMediaQuery } from '@mui/material';
 import { Box } from '@mui/system';
 import AccountMenu from './components/AccountMenu.tsx';
 import TopRightDrawer from './components/Login.tsx';
+import needlogin from './images/lgin.png';
+import MultipleSelectCheckmarks from './components/DropdownCheck.tsx';
+import { AuthContext } from './components/AuthContext.js';
+import { useContext } from 'react';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+
 
 const themel = {
   primary: '#4682B4',
@@ -76,15 +75,43 @@ const drawerWidth = 240;
 
 
 function MainPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [value, setValue] = React.useState(0);
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-
+  const [yearsdata, setYearsdata] = React.useState([]);
+  const [area_chart_data, setArea_chart_data] = React.useState([{}]);
+  const [radar_chart_data, setRadar_chart_data] = React.useState([{}]);
   const location = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const getYears = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/years`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          // Content-Type is automatically set for FormData
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('years:', data);
+        setYearsdata(data);
+      } else {
+        console.error('getting years list failed');
+        enqueueSnackbar('getting years list failed');
+      }
+    } catch (error) {
+      console.error('Error getting years list', error);
+      enqueueSnackbar(error);
+    }
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
+    getYears();
+
   };
 
   const handleDrawerClose = () => {
@@ -95,33 +122,6 @@ function MainPage() {
     setValue(newValue);
   };
 
-  // async function sendTokenToBackend(token) {
-  //   const apiUrl = `${process.env.REACT_APP_API_URL}/auth/google`;
-  //   // Send this token to your server
-  //   fetch(apiUrl, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ token }),
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => console.log(data))
-  //     .catch(error => console.error('Error:', error));
-  // }
-
-  // async function onSuccess(response) {
-  //   console.log('Login Success:', response);
-  //   setIsLoggedIn(true);
-  //   console.log("set is logged in ",isLoggedIn)
-  //   const token = response?.credential;
-  //   sessionStorage.setItem('authToken', token);
-  //   // await sendTokenToBackend(token);
-  // };
-
-  // const onFailure = (response) => {
-  //   console.log('Login Failed:', response);
-  // };
 
   const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -155,127 +155,106 @@ function MainPage() {
     }),
   }));
 
+
+  let { isLoggedIn, setIsLoggedIn, user_info, setUser_info } = useContext(AuthContext);
+
   return (
     <Container>
-      <Header>
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'row',
-        }}
-        >
+      <SnackbarProvider maxSnack={3}>
+        <Header>
           <Box sx={{
             display: 'flex',
-            alignItems: 'center'
-          }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                mr: 2,
-                display: isMobile ? 'flex' : open ? 'none' : 'flex',
-                ...(location.pathname === '/' && { display: 'none' }),
-              }}
+            flexDirection: 'row',
+          }}
+          ><script src="https://apis.google.com/js/platform.js" async defer></script>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={() => { if (isLoggedIn) { handleDrawerOpen() } else { enqueueSnackbar("Please login.") } }}
+                edge="start"
+                sx={{
+                  mr: 2,
+                  display: isMobile ? 'flex' : open ? 'none' : 'flex',
+                  ...(location.pathname === '/' && { display: 'none' }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="icon position tabs example"
             >
-              <MenuIcon />
-            </IconButton>
+              <Tab icon={<DocumentScannerIcon />} iconPosition="start" label="Scan" component={Link} to='/' style={{ color: 'white' }} />
+              <Tab icon={<AssessmentIcon />} iconPosition="start" label="Report" component={Link} to='/Data' style={{ color: 'white' }} />
+            </Tabs>
           </Box>
-          {isLoggedIn && 
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="icon position tabs example"
-          >
-            <Tab icon={<DocumentScannerIcon />} iconPosition="start" label="Scan" component={Link} to='/' style={{ color: 'white' }} />
-            <Tab icon={<AssessmentIcon />} iconPosition="start" label="Report" component={Link} to='/Data' style={{ color: 'white' }} />
-          </Tabs>}
-        </Box>
 
-        {/* {isLoggedIn && <Avatar
-          sx={{ bgcolor: '#F4A460' }}
-          alt="Remy Sharp"
-          src="/broken-image.jpg"
-        >
-          B
-        </Avatar>} */}
-        {isLoggedIn && <AccountMenu />}
-        {!isLoggedIn && <TopRightDrawer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>}
-        {/* {!isLoggedIn && (
-          <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_PROVIDER_CLIENT_ID || 'foo_bar'}>
+          {isLoggedIn && <AccountMenu user_info={user_info} setUser_info={setUser_info} setIsLoggedIn={setIsLoggedIn} />}
+          {!isLoggedIn && <TopRightDrawer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUser_info={setUser_info} />}
 
-            <GoogleLogin
-              onSuccess={credentialResponse => { onSuccess(credentialResponse) }}
-              onError={() => { onFailure('') }}
-              useOneTap
-              auto_select
-            />
-          </GoogleOAuthProvider>
-        )} */}
-      </Header>
-      {/* <MainContent> */}
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
+        </Header>
+        <Drawer
+          sx={{
             width: drawerWidth,
-            boxSizing: 'border-box',
-            backgroundImage: `linear-gradient(to bottom right, ${themel.light}, ${themel.backgrnd})`,
-          },
-        }}
-        variant={isMobile ? 'temporary' : 'persistent'}
-        open={open}
-        onClose={isMobile ? handleDrawerClose : undefined}
-        ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
-        }}
-        // variant="persistent"
-        anchor="left"
-      // open={open}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {['Mode 1', 'Mode 2', 'Mode 3', 'Mode 4'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <BarChartIcon /> : <BubbleChartIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['Mode 1', 'Mode 2', 'Mode 3'].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <BarChartIcon /> : <BubbleChartIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <Main open={open}>
-        <Routes>
-          <Route path='/' element={<Receit />} />
-          <Route path='/Data' element={<DataDis />} />
-        </Routes>
-      </Main>
-      {/* </MainContent> */}
-      <Footer>
-        <small>Copyright © 4FD3 DIGITALIZING RECIEPTS</small>
-      </Footer>
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+              backgroundImage: `linear-gradient(to bottom right, ${themel.light}, ${themel.backgrnd})`,
+            },
+          }}
+          variant={isMobile ? 'temporary' : 'persistent'}
+          open={open}
+          onClose={isMobile ? handleDrawerClose : undefined}
+          ModalProps={{
+            keepMounted: true,
+          }}
+
+          anchor="left"
+
+        >
+          <DrawerHeader>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </DrawerHeader>
+          <Divider sx={{ my: 2 }} />
+          <Box sx={{ textAlign: 'center' }}>
+            <h4>Charts Data Source</h4>
+          </Box>
+          <Divider />
+          <MultipleSelectCheckmarks title_name={'Annual/Monthly Total'} years={yearsdata.map(item => item._id)} setFunc={setArea_chart_data} />
+          <Divider sx={{ my: 2 }} />
+          <MultipleSelectCheckmarks title_name={'Annual Consumption Category Ratio'} years={yearsdata.map(item => item._id)} setFunc={setRadar_chart_data} />
+
+
+        </Drawer>
+        <Main open={open}>
+          <Routes>
+            <Route path='/' element={<Receit isLoggedIn={isLoggedIn} />} />
+            <Route path='/Data' element={isLoggedIn ? <DataDis area_chart_data={area_chart_data} radar_chart_data={radar_chart_data} /> : <div>
+              <img src={needlogin} alt="Grocery Img" style={{
+                width: '30%',
+                height: 'auto',
+                marginBottom: '20px'
+              }} />
+              <Box>
+                <h2>Please Login first...</h2>
+              </Box>
+            </div>} />
+          </Routes>
+        </Main>
+
+        <Footer>
+          <small>Copyright © 4FD3 DIGITALIZING RECIEPTS</small>
+        </Footer>
+      </SnackbarProvider>
     </Container>
   );
 }

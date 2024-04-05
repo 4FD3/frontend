@@ -6,14 +6,16 @@ import ForwardIcon from '@mui/icons-material/Forward';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 
 export function Camera({ setPhotoOpen }) {
 
   const videoRef = useRef(null);
   const [image, setImage] = useState('');
+  const [multi_cam, setMulti_cam] = useState(false);
   const [streamStarted, setStreamStarted] = useState(false);
-
+  const { enqueueSnackbar } = useSnackbar();
   const styleVideo = {
     display: 'flex',
     flexDirection: 'column',
@@ -31,6 +33,15 @@ export function Camera({ setPhotoOpen }) {
     left: '50%',
     transform: 'translate(-50%, -50%)',
   };
+  useEffect(() => {
+    setDefaultCamera();
+    return () => {
+      const video = videoRef.current;
+      if (video && video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
 
   useEffect(() => {
     getVideoStream();
@@ -84,6 +95,58 @@ export function Camera({ setPhotoOpen }) {
 
     return new Blob([u8arr], { type: mime });
   }
+  async function getCameras() {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      return devices.filter(device => device.kind === 'videoinput');
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
+  }
+  async function setDefaultCamera() {
+    const cameras = await getCameras();
+    if (cameras) {
+      if (cameras.length === 0) {
+        throw new Error('No camera found.');
+      } else if (cameras.length > 1) {
+        setMulti_cam(true);
+      } else if (cameras.length === 1) {
+        setMulti_cam(false);
+      }
+      let backCamera = cameras[0]; // Default to the first camera if back camera is not identified
+
+      for (let camera of cameras) {
+        if ('label' in camera && camera.label.toLowerCase().includes('back')) {
+          backCamera = camera;
+          break;
+        }
+      }
+
+      startVideoStream(backCamera.deviceId);
+    }
+  }
+  function startVideoStream(deviceId) {
+    navigator.mediaDevices.getUserMedia({
+      video: { deviceId: { exact: deviceId } }
+    }).then(stream => {
+      const video = videoRef.current;
+      if (video) {
+        video.srcObject = stream;
+      }
+    }).catch(error => {
+      console.error('Error accessing the camera:', error);
+    });
+  }
+  const [currentCameraIndex, setCurrentCameraIndex] = useState(0);
+
+  async function switchCamera() {
+    const cameras = await getCameras();
+    if (cameras && cameras.length > 1) {
+      const nextCameraIndex = (currentCameraIndex + 1) % cameras.length;
+      setCurrentCameraIndex(nextCameraIndex);
+      startVideoStream(cameras[nextCameraIndex].deviceId);
+    }
+  }
 
   const takePicture = () => {
     const video = videoRef.current;
@@ -111,7 +174,6 @@ export function Camera({ setPhotoOpen }) {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts/upload`, {
           method: 'POST',
           body: formData,
-          // Add headers if required by the OCR service
         });
 
         if (response.ok) {
@@ -120,47 +182,53 @@ export function Camera({ setPhotoOpen }) {
           // Handle the OCR data
         } else {
           console.error('OCR failed', response);
+          enqueueSnackbar('OCR failed');
         }
       } catch (error) {
         console.error('Error sending image to OCR', error);
+        enqueueSnackbar(error);
       }
     } else {
       console.log('Cannot send image to OCR. Image url is empty string.');
+      enqueueSnackbar('Cannot send image to OCR. Image url is empty string.');
     }
   };
 
   return (
     <div>
-      <Modal
-        open={true}
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh'
-        }}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
-        <Box sx={{ styleVideo }}>
-          {streamStarted && !image && (
-            <video
-              ref={videoRef}
-              autoPlay
-              style={{ width: '100%' }}
-            ></video>
-          )}
-          {image && <img src={image} alt="Captured" style={{ width: '100%' }} />}
-          <Box sx={{ textAlign: 'right' }}>
+      <SnackbarProvider maxSnack={3}>
+        <Modal
+          open={true}
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh'
+          }}
+          aria-labelledby='modal-modal-title'
+          aria-describedby='modal-modal-description'
+        >
+          <Box sx={{ styleVideo }}>
             {streamStarted && !image && (
-              <IconButton style={{ color: '#FFA500' }} size="large" onClick={takePicture}><PhotoCameraIcon /></IconButton>
+              <video
+                ref={videoRef}
+                autoPlay
+                style={{ width: '100%' }}
+              ></video>
             )}
-            {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); getVideoStream() }}><DeleteOutlineIcon /></IconButton>}
-            {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { stopVideoStream(); sendImageToOCR(image); setImage(''); handleClose(); }}><ForwardIcon /></IconButton>}
-            {!image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); handleClose(); stopVideoStream(); }}><HighlightOffIcon /></IconButton>}
+            {image && <img src={image} alt="Captured" style={{ width: '100%' }} />}
+            <Box sx={{ textAlign: 'right' }}>
+              {streamStarted && !image && (
+                <IconButton style={{ color: '#FFA500' }} size="large" onClick={takePicture}><PhotoCameraIcon /></IconButton>
+              )}
+              {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); getVideoStream() }}><DeleteOutlineIcon /></IconButton>}
+              {!image && multi_cam && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { switchCamera() }}><CameraswitchIcon /></IconButton>}
+              {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { stopVideoStream(); sendImageToOCR(image); setImage(''); handleClose(); }}><ForwardIcon /></IconButton>}
+              {!image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); handleClose(); stopVideoStream(); }}><HighlightOffIcon /></IconButton>}
+            </Box>
           </Box>
-        </Box>
-      </Modal>
+        </Modal>
+      </SnackbarProvider>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { PieChartUseThis, AreaChartUseThis, RadarChartUseThis } from './Charts.t
 import StickyHeadTable from './DetailTable.tsx';
 import VirtualizedList from './ListData.tsx';
 import Paper from '@mui/material/Paper';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 
 const dataR = [
     {
@@ -166,143 +167,183 @@ const dummyData = {
 };
 
 
-export default function DataDis() {
+export default function DataDis({ area_chart_data, radar_chart_data }) {
 
     const [dataExist, setDataExist] = useState(true);
+    const [pieData, setPieData] = useState([]);
     const [receiptContentIndex, setReceiptContentIndex] = useState(0);
     const [receiptsData, setReceiptsData] = useState(null);
     const COLORS = ['#4682B4', '#82ca9d', '#FFA500', '#B0C4DE', '#6c757d', '#28a745', '#f8f9fa', '#343a40', '#FFFFFF'];
+
+    const { enqueueSnackbar } = useSnackbar();
+
+
     const getReceipts = async () => {
-            try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${sessionStorage.getItem('authToken')}`,
-                      },
-                    // Include headers if required by your API
-                });
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+                // Include headers if required by your API
+            });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setReceiptsData(data)
-                    console.log('get data:', data);
-                    // Handle the response data
-                } else {
-                    console.error('get data failed');
-                }
-            } catch (error) {
-                console.error('Error get data', error);
+            if (response.ok) {
+                const data = await response.json();
+                setReceiptsData(data)
+                console.log('get data:', data);
+                // Handle the response data
+            } else {
+                console.error('get data failed');
+                enqueueSnackbar('Get data failed');
             }
-        
+        } catch (error) {
+            console.error('Error get data', error);
+            enqueueSnackbar(error);
+        }
+
     };
-    useEffect(()=>{
+    useEffect(() => {
         getReceipts()
-    },[])
+    }, [])
+    useEffect(() => {
+        let receiptId: string | number = 0;
+
+        if (receiptsData && receiptContentIndex < receiptsData.length) {
+            receiptId = receiptsData[receiptContentIndex]._id;
+            getPieData(receiptId);
+        }
 
 
+    }, [receiptsData, receiptContentIndex])
+    const getPieData = async (receiptId) => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts/${receiptId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+                // Include headers if required by your API
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setPieData(data)
+                console.log('get pie data:', data);
+                // Handle the response data
+            } else {
+                console.error('get data failed');
+                enqueueSnackbar('get data failed');
+            }
+        } catch (error) {
+            console.error('Error get data', error);
+            enqueueSnackbar(error);
+        }
+    }
 
     return (
         <div>
-            {!dataExist &&
-                <div>
-                    <img src={backgroundImg} alt="Grocery Img" style={{
-                        width: '100%',
-                        height: 'auto',
-                        maxWidth: '600px',
-                        maxHeight: '337.5px',
-                        marginBottom: '20px'
-                    }} />
-                    <Box>
-                        <h2>Sorry, no data available...</h2>
-                    </Box>
-                </div>
-            }
+            <SnackbarProvider maxSnack={3}>
+                {!dataExist &&
+                    <div>
+                        <img src={backgroundImg} alt="Grocery Img" style={{
+                            width: '100%',
+                            height: 'auto',
+                            maxWidth: '600px',
+                            maxHeight: '337.5px',
+                            marginBottom: '20px'
+                        }} />
+                        <Box>
+                            <h2>Sorry, no data available...</h2>
+                        </Box>
+                    </div>
+                }
 
-            {dataExist &&
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', md: 'row' },
-                }}>
+                {dataExist &&
                     <Box sx={{
                         display: 'flex',
-                        flexDirection: 'column',
-                        width: { xs: '100%', md: '60%' },
+                        flexDirection: { xs: 'column', md: 'row' },
                     }}>
                         <Box sx={{
                             display: 'flex',
-                            flexDirection: { xs: 'column', md: 'row' },
+                            flexDirection: 'column',
+                            width: { xs: '100%', md: '60%' },
                         }}>
-                            <Paper sx={{ width: { xs: '100%', md: '100%' }, margin: '1%', padding: '1%', backgroundColor: '#F0F8FF', borderRadius: 2, }}>
-                                <AreaChartUseThis
-                                    data={data}
-                                    style={{
-                                        width: { xs: '100%', md: '100%' },
-                                        height: 300,
-                                    }}
-                                />
-                            </Paper>
-                        </Box>
-                        {/* <Paper sx={{ width: { xs: '100%', md: '100%' }, margin: '1%', padding: '1%', backgroundColor: '#F0F8FF', borderRadius: 2, }}> */}
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: { xs: 'column', md: 'row' },
-                            padding: '1%',
-                            margin: '1%',
-                            borderRadius: 2,
-                            backgroundColor: '#F0F8FF'
-                        }}>
-                            <VirtualizedList style={{ xs: '100%', md: '100%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%' }} data={receiptsData} setReceiptContentIndex={setReceiptContentIndex}/>
-                            <StickyHeadTable style={{
-                                xs: '100%', md: '100%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%', '& .MuiTableCell-root': {
-                                    wordWrap: 'break-word',
-                                    maxWidth: '335px',
-                                    overflow: 'hidden',
-                                }
-                            }} dataT={receiptsData?receiptsData[receiptContentIndex]:{}} />
-                        </Box>
-                        {/* </Paper> */}
-                    </Box>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: { xs: '100%', md: '40%' },
-                    }}>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: { xs: 'column', md: 'row' },
-                        }}>
-                            <Paper sx={{
-                                borderRadius: 2,
-                                width: { xs: '100%', md: '100%' },
-                                backgroundColor: '#F0F8FF',
-                                padding: '1.5%',
-                                margin: '1.5%'
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: { xs: 'column', md: 'row' },
                             }}>
-                                <RadarChartUseThis data={dataR} style={{ width: '100%', height: 300 }} />
-                            </Paper>
+                                <Paper sx={{ width: { xs: '100%', md: '100%' }, margin: '1%', padding: '1%', backgroundColor: '#F0F8FF', borderRadius: 2, }}>
+                                    <h5>Annual/Monthly Total</h5>
+                                    <AreaChartUseThis
+                                        data={area_chart_data}
+                                        style={{
+                                            width: { xs: '100%', md: '100%' },
+                                            height: 300,
+                                        }}
+                                    />
+                                </Paper>
+                            </Box>
+                            {/* <Paper sx={{ width: { xs: '100%', md: '100%' }, margin: '1%', padding: '1%', backgroundColor: '#F0F8FF', borderRadius: 2, }}> */}
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: { xs: 'column', md: 'row' },
+                                padding: '1%',
+                                margin: '1%',
+                                borderRadius: 2,
+                                backgroundColor: '#F0F8FF'
+                            }}>
+                                <VirtualizedList style={{ xs: '100%', md: '100%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%' }} data={receiptsData} setReceiptContentIndex={setReceiptContentIndex} />
+                                <StickyHeadTable style={{
+                                    xs: '100%', md: '100%', overflow: 'hidden', backgroundColor: '#F0F8FF', padding: '1%', margin: '1%', '& .MuiTableCell-root': {
+                                        wordWrap: 'break-word',
+                                        maxWidth: '335px',
+                                        overflow: 'hidden',
+                                    }
+                                }} dataT={receiptsData ? receiptsData[receiptContentIndex] : {}} />
+                            </Box>
+                            {/* </Paper> */}
                         </Box>
                         <Box sx={{
                             display: 'flex',
-                            flexDirection: { xs: 'column', md: 'row' },
+                            flexDirection: 'column',
+                            width: { xs: '100%', md: '40%' },
                         }}>
-                            <Paper sx={{
-                                borderRadius: 2,
-                                width: { xs: '100%', md: '100%' },
-                                backgroundColor: '#F0F8FF',
-                                padding: '1.5%',
-                                margin: '1.5%'
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: { xs: 'column', md: 'row' },
                             }}>
-                                <PieChartUseThis data={[
-                                    { name: 'Grocery', value: 400 },
-                                    { name: 'Electronic', value: 300 },
-                                    { name: 'Home&Garden', value: 300 },
-                                    { name: 'Other', value: 200 },
-                                ]} />
-                            </Paper>
+                                <Paper sx={{
+                                    borderRadius: 2,
+                                    width: { xs: '100%', md: '100%' },
+                                    backgroundColor: '#F0F8FF',
+                                    padding: '1.5%',
+                                    margin: '1.5%'
+                                }}>
+                                    <h5>Annual Consumption Category Ratio</h5>
+                                    <RadarChartUseThis data={radar_chart_data} style={{ width: '100%', height: 300 }} />
+                                </Paper>
+                            </Box>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: { xs: 'column', md: 'row' },
+                            }}>
+                                <Paper sx={{
+                                    borderRadius: 2,
+                                    width: { xs: '100%', md: '100%' },
+                                    backgroundColor: '#F0F8FF',
+                                    padding: '1.5%',
+                                    margin: '1.5%'
+                                }}>
+                                    <h5>Receipt Category Ratio</h5>
+                                    <PieChartUseThis data={pieData}
+                                    />
+                                </Paper>
+                            </Box>
                         </Box>
                     </Box>
-                </Box>
-            }
+                }
+            </SnackbarProvider>
         </div>
     );
 }
