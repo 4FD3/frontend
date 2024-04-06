@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -60,7 +60,7 @@ function renderRow({ data, setReceiptContentIndex }) {
                     <ListItemButton onClick={() => setReceiptContentIndex(index)}>
                         <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Box>
-                                <IconButton size="small" style={{ color: '#FFA500' }} onClick={handleClickOpen}><CloseIcon /></IconButton>
+                                <IconButton size="small" style={{ color: '#FFA500' }} onClick={handleClickOpen}><DeleteOutlineIcon /></IconButton>
                             </Box>
                             <ListItemText primary={`Receit ${data[index].createdAt}`} />
                             <Dialog

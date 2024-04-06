@@ -3,7 +3,7 @@ import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import Input from '@mui/material/Input';
@@ -80,7 +80,7 @@ export function EditModal({ data, onSave }) {
                         item ?
                             <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Box>
-                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("items", index) }}><CloseIcon /></IconButton>
+                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("items", index) }}><DeleteOutlineIcon /></IconButton>
                                 </Box>
                                 <Box>
                                     <Input
@@ -145,7 +145,7 @@ export function EditModal({ data, onSave }) {
                         item ?
                             <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Box>
-                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("tax", index) }}><CloseIcon /></IconButton>
+                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("tax", index) }}><DeleteOutlineIcon /></IconButton>
                                 </Box>
                                 <Box>
 
@@ -167,7 +167,7 @@ export function EditModal({ data, onSave }) {
                         item ?
                             <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Box>
-                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("total", index) }}><CloseIcon /></IconButton>
+                                    <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { deleteItem("total", index) }}><DeleteOutlineIcon /></IconButton>
                                 </Box>
                                 <Box>
                                     <Input
