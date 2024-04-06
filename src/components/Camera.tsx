@@ -9,8 +9,8 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 
-export function Camera({ setPhotoOpen }) {
-
+export function Camera({ setPhotoOpen,setLoading,setData_edit,setIsModalOpen }) {
+  
   const videoRef = useRef(null);
   const [image, setImage] = useState('');
   const [multi_cam, setMulti_cam] = useState(false);
@@ -173,23 +173,37 @@ export function Camera({ setPhotoOpen }) {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/receipts/upload`, {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            // Content-Type is automatically set for FormData
+          },
           body: formData,
         });
 
         if (response.ok) {
           const data = await response.json();
-          console.log('OCR Result:', data);
-          // Handle the OCR data
+          console.log('Image recognition result:', data);
+          setLoading(false);
+          setData_edit(data);
+          setIsModalOpen(true);
+          setImage('');
+          setPhotoOpen(false);
         } else {
-          console.error('OCR failed', response);
-          enqueueSnackbar('OCR failed');
+          console.error('Upload failed');
+          setImage('');
+          handleClose();
+          enqueueSnackbar('Upload failed');          
         }
       } catch (error) {
         console.error('Error sending image to OCR', error);
+        setImage('');
+        handleClose();
         enqueueSnackbar(error);
       }
     } else {
       console.log('Cannot send image to OCR. Image url is empty string.');
+      setImage('');
+      handleClose();
       enqueueSnackbar('Cannot send image to OCR. Image url is empty string.');
     }
   };
@@ -223,7 +237,7 @@ export function Camera({ setPhotoOpen }) {
               )}
               {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); getVideoStream() }}><DeleteOutlineIcon /></IconButton>}
               {!image && multi_cam && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { switchCamera() }}><CameraswitchIcon /></IconButton>}
-              {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { stopVideoStream(); sendImageToOCR(image); setImage(''); handleClose(); }}><ForwardIcon /></IconButton>}
+              {image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { stopVideoStream(); sendImageToOCR(image); }}><ForwardIcon /></IconButton>}
               {!image && <IconButton size="large" style={{ color: '#FFA500' }} onClick={() => { setImage(''); handleClose(); stopVideoStream(); }}><HighlightOffIcon /></IconButton>}
             </Box>
           </Box>

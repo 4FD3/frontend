@@ -87,15 +87,18 @@ export default function Receit({ isLoggedIn }) {
       });
 
       if (response.ok) {
+        window.location.reload();
         console.log('Data saved successfully');
         enqueueSnackbar('Receipt saved successfully');
       } else {
         // Handle server error response
+        window.location.reload();
         console.error('Server error');
         enqueueSnackbar('Server error');
       }
     } catch (error) {
       // Handle network error
+      window.location.reload();
       console.error('Network error:', error);
       enqueueSnackbar(error);
     }
@@ -217,7 +220,7 @@ export default function Receit({ isLoggedIn }) {
       <SnackbarProvider maxSnack={3}>
         <img src={backgroundImg} alt="Grocery Img" style={imageStyle} />
         <br /><br />
-        {photoOpen && <Camera setPhotoOpen={setPhotoOpen} />}
+        {photoOpen && <Camera setPhotoOpen={setPhotoOpen} setLoading={setLoading} setData_edit={setData_edit} setIsModalOpen={setIsModalOpen}/>}
         {isModalOpen && <EditModal data={data_edit} onSave={handleSaveChanges} />}
 
         {imageSrc &&

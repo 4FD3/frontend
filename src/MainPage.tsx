@@ -81,6 +81,7 @@ function MainPage() {
   const [yearsdata, setYearsdata] = React.useState([]);
   const [area_chart_data, setArea_chart_data] = React.useState([{}]);
   const [radar_chart_data, setRadar_chart_data] = React.useState([{}]);
+  
   const location = useLocation();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -155,6 +156,32 @@ function MainPage() {
     }),
   }));
 
+  const getWidth = () => window.innerWidth
+    || document.documentElement.clientWidth
+    || document.body.clientWidth;
+
+  const getImageStyle = () => {
+    let imageStyle = {
+      width: '30%',
+      height: 'auto',
+      maxWidth: '600px',
+      maxHeight: '337.5px',
+      marginBottom: '20px',
+      marginTop: '10px',
+    };
+
+    if (getWidth() < 600) {
+      imageStyle = {
+        ...imageStyle,
+        marginTop: '30%',
+      };
+    }
+
+    return imageStyle;
+  };
+
+
+  const imageStyle = getImageStyle();
 
   let { isLoggedIn, setIsLoggedIn, user_info, setUser_info } = useContext(AuthContext);
 
@@ -239,13 +266,9 @@ function MainPage() {
           <Routes>
             <Route path='/' element={<Receit isLoggedIn={isLoggedIn} />} />
             <Route path='/Data' element={isLoggedIn ? <DataDis area_chart_data={area_chart_data} radar_chart_data={radar_chart_data} /> : <div>
-              <img src={needlogin} alt="Grocery Img" style={{
-                width: '30%',
-                height: 'auto',
-                marginBottom: '20px'
-              }} />
+              <img src={needlogin} alt="Grocery Img" style={imageStyle} />
               <Box>
-                <h2>Please Login first...</h2>
+                <h2>Please Login...</h2>
               </Box>
             </div>} />
           </Routes>

@@ -37,10 +37,14 @@ export function EditModal({ data, onSave }) {
     };
 
     function addItem() {
-        // Clone the current items and add a new item
-        const newItem = { itemName: '', price: '' }; // Adjust based on your needs
+        const newItem = { itemName: '', price: '' };
         const newItems = [...editableData.items, newItem];
         setEditableData({ ...editableData, items: newItems });
+    }
+    function addTotal() {
+        const newTotal = { itemName: '', price: '' };
+        const newtotals = [...editableData.total, newTotal];
+        setEditableData({ ...editableData, total: newtotals });
     }
 
     function deleteItem(typ, index) {
@@ -123,7 +127,12 @@ export function EditModal({ data, onSave }) {
                                 </Box>
                             </Box> : null
                     ))}
-                    <h3>Others</h3>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <h3>Others</h3>
+                        <Box>
+                            <IconButton size="small" style={{ color: '#FFA500' }} onClick={() => { addTotal() }}><AddIcon /></IconButton>
+                        </Box>
+                    </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Box>
                             <IconButton size="small" style={{ color: '#FFA500' }} ><StorefrontIcon /></IconButton>
