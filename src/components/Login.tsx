@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -8,8 +8,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 
-
-export default function TopRightDrawer({ isLoggedIn, setIsLoggedIn, setUser_info }) {
+export default function TopRightDrawer({isLoggedIn, setIsLoggedIn, setUser_info}) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     // const [user_info, setUser_info] = React.useState(null);
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,13 +16,13 @@ export default function TopRightDrawer({ isLoggedIn, setIsLoggedIn, setUser_info
 
     const { enqueueSnackbar } = useSnackbar();
 
-
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     async function onSuccess(response) {
         console.log('Login Success:', response);
         setIsLoggedIn(true);
@@ -59,7 +58,6 @@ export default function TopRightDrawer({ isLoggedIn, setIsLoggedIn, setUser_info
         console.log('Login Failed:', response);
         enqueueSnackbar('Login Failed.');
     };
-
 
     return (
         <div>

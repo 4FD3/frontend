@@ -191,7 +191,6 @@ export default function Receit({ isLoggedIn }) {
     || document.documentElement.clientWidth
     || document.body.clientWidth;
 
-  // Function to dynamically generate the image style based on screen width
   const getImageStyle = () => {
     let imageStyle = {
       width: '100%',

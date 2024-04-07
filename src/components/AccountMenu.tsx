@@ -131,8 +131,6 @@ export default function AccountMenu({ user_info, setUser_info, setIsLoggedIn }) 
         <MenuItem onClick={handleDialogOpen}>
           <Avatar sx={{ width: 32, height: 32, bgcolor: '#F4A460' }} src={user_info ? user_info.avatar : '../images/pic1.png'} /> Profile
         </MenuItem>
-
-
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />

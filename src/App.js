@@ -6,8 +6,8 @@ import AuthProvider from './components/AuthContext';
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <MainPage />
+        <AuthProvider>
+          <MainPage />
       </AuthProvider>
     </BrowserRouter>
   );
